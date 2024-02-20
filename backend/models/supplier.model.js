@@ -3,40 +3,35 @@ const config = require("../../config")
 
 const db = new Sequelize(config.database.connectionString)
 
-class Material extends Model { }
-Material.init({
+class Supplier extends Model { }
+Supplier.init({
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
     allowNull: false
   },
-  title: {
+  name: {
     type: DataTypes.STRING,
     defaultValue: "",
     allowNull: false
   },
-  isbn: {
+  email: {
     type: DataTypes.STRING,
     defaultValue: "",
     allowNull: false
   },
-  issn: {
+  contact: {
     type: DataTypes.STRING,
     defaultValue: "",
     allowNull: true
   },
-  ubication: {
+  details: {
     type: DataTypes.STRING,
     defaultValue: "",
     allowNull: true
   },
-  edition: {
-    type: DataTypes.INTEGER,
-    defaultValue: 1,
-    allowNull: false
-  },
-  stock: {
+  phone: {
     type: DataTypes.INTEGER,
     defaultValue: 0,
     allowNull: false
@@ -45,20 +40,10 @@ Material.init({
     type: DataTypes.BOOLEAN,
     defaultValue: false,
     allowNull: false
-  },
-  used: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-    allowNull: false
-  },
-  price: {
-    type: DataTypes.FLOAT,
-    defaultValue: 0,
-    allowNull: false
   }
 }, {
   sequelize: db,
-  modelName: "Material"
+  modelName: "Supplier"
 })
 
-module.exports = Material
+module.exports = Supplier
