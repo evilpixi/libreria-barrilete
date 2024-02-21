@@ -3,27 +3,25 @@ const { Sequelize, DataTypes } = require('sequelize')
 const config = require("../../config")
 const sequelize = new Sequelize(config.database.connectionString)
 
-const Material = require("./material.model")
-const Publisher = require("./publisher.model")
-const Category = require("./category.model")
-const Author = require("./author.model")
-const Supplier = require("./supplier.model")
+const Material = require("./material.model")(sequelize)
+const Publisher = require("./publisher.model")(sequelize)
+const Category = require("./category.model")(sequelize)
+const Author = require("./author.model")(sequelize)
+const Supplier = require("./supplier.model")(sequelize)
 
-Publisher.hasMany(Material, { foreignKey: "publisher_id" })
-Material.belongsTo(Publisher, { foreignKey: "publisher_id" })
+const Sale = require("./sale.model")(sequelize)
 
-Category.hasMany(Material, { foreignKey: "category_id" })
-Material.belongsTo(Category, { foreignKey: "category_id" })
+// Material foreign keys
+Publisher.hasMany(Material)
+Material.belongsTo(Publisher)
 
-Author.hasMany(Material, { foreignKey: "author_id" })
-Material.belongsTo(Author, { foreignKey: "author_id" })
+Category.hasMany(Material)
+Material.belongsTo(Category)
 
-Material.sync({ force: true })
-Publisher.sync({ force: true })
-Category.sync({ force: true })
-Author.sync({ force: true })
-Supplier.sync({ force: true })
+Author.hasMany(Material)
+Material.belongsTo(Author)
 
+// Material - Supplier association table
 const MaterialSupplier = sequelize.define("MaterialSupplier", {
   id: {
     type: DataTypes.INTEGER,
@@ -32,36 +30,17 @@ const MaterialSupplier = sequelize.define("MaterialSupplier", {
     allowNull: false
   }
 })
-MaterialSupplier.sync({ force: true })
+Material.belongsToMany(Supplier, { through: MaterialSupplier })
+Supplier.belongsToMany(Material, { through: MaterialSupplier })
+MaterialSupplier.belongsTo(Material)
+MaterialSupplier.belongsTo(Supplier)
+Material.hasMany(MaterialSupplier)
+Supplier.hasMany(MaterialSupplier)
 
-db.sync = async () => {
-  return
-  /*await Material.sync({ force: true })
-  await Publisher.sync({ force: true })
-  await Category.sync({ force: true })
-  await Author.sync({ force: true })
-  await Supplier.sync({ force: true })
-
-
-  //await Material.sync({ force: true })
-
-  const MaterialSupplier = sequelize.define("MaterialSupplier", {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false
-    }
-  })
-  await MaterialSupplier.sync({ force: true })*/
-
-  Material.belongsToMany(Supplier, { through: MaterialSupplier })
-  Supplier.belongsToMany(Material, { through: MaterialSupplier })
-  MaterialSupplier.belongsTo(Material, { foreignKey: "material_id" })
-  MaterialSupplier.belongsTo(Supplier, { foreignKey: "supplier_id" })
-  Material.hasMany(MaterialSupplier, { foreignKey: "material_id" })
-  Supplier.hasMany(MaterialSupplier, { foreignKey: "supplier_id" })
-  await MaterialSupplier.sync({ force: true })
+db.sequelize = sequelize
+db.sync = () => {
+  sequelize.sync({ force: true })
 }
 
+console.log("\x1b[33m%s\x1b[0m", "\n\t--->>> Pixi started the database <<<---")
 module.exports = db
