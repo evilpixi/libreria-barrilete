@@ -5,7 +5,17 @@ const logger = require('morgan')
 const cors = require('cors')
 
 const config = require('../config')
-const db = require("./models/db")
+
+let db
+if (process.env.NODE_ENV === 'test') {
+  const sequelize = require('./mocks/sequelize-mock')
+  db = require("./models/db")(sequelize)
+} else {
+  const Sequelize = require('sequelize')
+  const sequelize = new Sequelize(config.database.connectionString);
+  db = require("./models/db")(sequelize)
+}
+
 db.sync()
 
 const indexRouter = require('./routes/index')
