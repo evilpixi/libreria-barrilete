@@ -1,0 +1,30 @@
+:root {
+  font-family: Segoe UI;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+}
+
+.main-body-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 0px;
+  margin: 0px;
+
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}

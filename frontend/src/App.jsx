@@ -1,34 +1,63 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react'
+import colors from "./components/style/colors.js"
+import NavBar from "./components/NavBar.jsx"
 
-function App() {
-  const [count, setCount] = useState(0)
+import AddBooksView from "./components/AddBooks.jsx"
+
+function App () {
+  const [currentTab, setCurrentTab] = useState(0)
+
+  // init
+  useEffect(() => {
+    setCurrentTab(0)
+  }, [])
+
+  const views = [
+    {
+      title: "Añadir libros",
+      icon: "book-open",
+      component: () => { return (<AddBooksView />) }
+    },
+    {
+      title: "Ver libros",
+      icon: "book",
+      component: () => <div>paxi lista los libros</div>
+    },
+    {
+      title: "Proveedores",
+      icon: "truck",
+      component: () => <div>provs</div>
+    },
+    {
+      title: "Datos",
+      icon: "file-text",
+      component: () => <div>cruds</div>
+    },
+    {
+      title: "Vender",
+      icon: "shopping-cart",
+      component: () => <div>sell</div>
+    }
+  ]
+
+  const handleTabChangeFromNavbar = (newTab) => {
+    setCurrentTab(newTab)
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className={"main-body-container"}
+      style={{
+        backgroundColor: colors.bg,
+        color: colors.accent
+      }}>
+      <NavBar
+        onStateChange={handleTabChangeFromNavbar}
+        viewsData={views.map((v) => new Object({ title: v.title, icon: v.icon }))}
+      />
+      <div className={"main-content"}>
+        {views[currentTab].component()}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 

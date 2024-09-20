@@ -1,16 +1,20 @@
 
-module.exports = (sequelize) => {
-  const db = {}
+module.exports = (sequelize) =>
+{
+  const db = {
+    sequelizeInstance: sequelize
+  }
   // db.sequelize = sequelize
-  db.sync = () => {
-    sequelize.sync({ force: true })
+  db.sync = () =>
+  {
+    sequelize.sync({ force: false })
   }
 
 
   const { DataTypes } = require('sequelize')
   const config = require("../../config")
 
-  const Material = require("./material.model")(sequelize)
+  const Material = require("./material.model")(db.sequelizeInstance)
   const Publisher = require("./publisher.model")(sequelize)
   const Category = require("./category.model")(sequelize)
   const Author = require("./author.model")(sequelize)
@@ -46,6 +50,6 @@ module.exports = (sequelize) => {
 
 
   console.log("\x1b[33m%s\x1b[0m", "\n\t--->>> Pixi started the database <<<---")
-  
+
   return db
 }
